@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+:root {
+  --bg: #EEEBDD;
+  --surface: #FBFAF4;
+  --ink: #16281F;
+  --ink-soft: #4B5A50;
+  --line: #D8D2BC;
+  --primary: #234E43;
+  --primary-soft: #DCE7DF;
+  --accent: #DE9327;
+  --accent-soft: #F4DDA9;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Work Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.shell { max-width: 880px; margin: 0 auto; padding: 28px 20px 64px; }
+
+.nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: var(--primary); text-transform: uppercase; }
+.brand-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: var(--accent-soft); }
+.step-tag { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); border: 1px solid var(--line); padding: 5px 10px; border-radius: 999px; }
+
+.hero { margin-bottom: 40px; }
+.eyebrow { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 14px; }
+.h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(28px, 4.5vw, 42px); line-height: 1.08; letter-spacing: -0.01em; margin: 0 0 14px; max-width: 15ch; }
+.sub { font-size: 16px; line-height: 1.6; color: var(--ink-soft); max-width: 46ch; margin: 0; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 1px 0 rgba(22,40,31,0.03);
+}
