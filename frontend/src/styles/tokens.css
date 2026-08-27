@@ -44,3 +44,214 @@ body {
   padding: 32px;
   box-shadow: 0 1px 0 rgba(22,40,31,0.03);
 }
+
+/* ─── Part 2: BusinessSelect ──────────────────────────────────────────────── */
+
+.bs-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.bs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.bs-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 14px 12px;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.bs-tile:hover { border-color: var(--primary); }
+.bs-tile.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 3px rgba(35,78,67,0.12);
+}
+.bs-tile-icon  { font-size: 22px; line-height: 1; margin-bottom: 4px; }
+.bs-tile-name  { font-weight: 600; font-size: 14px; color: var(--ink); line-height: 1.3; }
+.bs-tile-desc  { font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
+.bs-tile-check {
+  position: absolute; top: 10px; right: 10px;
+  width: 18px; height: 18px; background: var(--primary);
+  border-radius: 50%; color: var(--accent-soft);
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+}
+
+.bs-margin-row { margin-bottom: 16px; }
+.bs-margin-field { display: block; }
+.bs-rupee-wrap {
+  display: flex; align-items: center;
+  background: var(--bg); border: 1.5px solid var(--line);
+  border-radius: 10px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.bs-rupee-wrap:focus-within { border-color: var(--primary); }
+.bs-rupee-icon { flex-shrink: 0; margin-left: 14px; color: var(--ink-soft); }
+.bs-margin-input {
+  flex: 1; border: none; background: transparent;
+  padding: 13px 14px 13px 8px; font-size: 18px;
+  font-family: 'Work Sans', sans-serif; color: var(--ink);
+  outline: none;
+}
+
+.bs-calc-preview {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--primary-soft); border: 1px solid rgba(35,78,67,0.2);
+  border-radius: 12px; padding: 14px 18px; flex-wrap: wrap;
+}
+.bs-calc-item { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 110px; }
+.bs-calc-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft); }
+.bs-calc-value { font-size: 16px; font-weight: 600; color: var(--ink); }
+.bs-calc-value.highlight { color: var(--primary); font-size: 18px; }
+.bs-calc-arrow { color: var(--ink-soft); flex-shrink: 0; }
+
+.bs-error { color: #b91c1c; font-size: 13px; margin-top: 10px; }
+.bs-footer { display: flex; justify-content: flex-end; margin-top: 8px; padding-bottom: 8px; }
+
+/* ─── Part 3: Feasibility ─────────────────────────────────────────────────── */
+
+.feas-card { margin-bottom: 0; }
+.feas-card-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.feas-icon { color: var(--primary); flex-shrink: 0; }
+.feas-icon.opportunity { color: #1d4ed8; }
+.feas-icon.threat { color: #b91c1c; }
+.feas-title { font-size: 17px; font-weight: 600; margin: 0; color: var(--ink); }
+.feas-badge {
+  margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  background: var(--accent-soft); color: #78350f; padding: 3px 10px;
+  border-radius: 999px; border: 1px solid #E6C374;
+}
+.feas-body { font-size: 15px; line-height: 1.65; color: var(--ink-soft); margin: 0; }
+.feas-list {
+  margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px;
+}
+.feas-list li { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
+.feas-list.threat-list li { color: #b91c1c; }
+
+.swot-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+@media (max-width: 560px) { .swot-grid { grid-template-columns: 1fr; } }
+.swot-quadrant {
+  border: 1px solid; border-radius: 12px; padding: 14px 16px;
+}
+.swot-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  font-weight: 600; margin: 0 0 8px;
+}
+.swot-items {
+  margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 5px;
+}
+.swot-items li { font-size: 13px; line-height: 1.5; }
+
+/* ─── Part 4: FinancialResults ────────────────────────────────────────────── */
+
+.fin-summary-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+@media (max-width: 560px) { .fin-summary-row { grid-template-columns: 1fr; } }
+
+.fin-summary-card {
+  background: var(--surface); border: 1.5px solid var(--line);
+  border-radius: 14px; padding: 20px 18px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.fin-summary-card.primary { border-color: var(--primary); background: var(--primary-soft); }
+.fin-summary-card.accent  { border-color: var(--accent);  background: var(--accent-soft); }
+.fin-summary-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft);
+}
+.fin-summary-value { font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.fin-summary-note  { font-size: 12px; color: var(--ink-soft); }
+
+.fin-scheme-card { }
+.fin-scheme-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.fin-scheme-badge {
+  background: var(--primary); color: var(--accent-soft);
+  border-radius: 8px; padding: 6px 14px; font-weight: 600; font-size: 14px;
+}
+.fin-scheme-rate {
+  font-family: 'IBM Plex Mono', monospace; font-size: 15px;
+  color: var(--primary); font-weight: 600;
+}
+.fin-scheme-details {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;
+  margin-bottom: 14px;
+}
+.fin-detail-item { display: flex; flex-direction: column; gap: 3px; }
+.fin-detail-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft);
+}
+.fin-detail-val { font-size: 16px; font-weight: 600; color: var(--ink); }
+.fin-scheme-note {
+  display: flex; gap: 8px; align-items: flex-start;
+  background: #fef9ee; border: 1px solid #f0d080; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: #78550d; line-height: 1.5;
+}
+.fin-scheme-note svg { margin-top: 2px; flex-shrink: 0; }
+
+.fin-table-wrap { overflow-x: auto; }
+.fin-table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+}
+.fin-table th, .fin-table td {
+  text-align: right; padding: 10px 12px; border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.fin-table th:first-child, .fin-table td:first-child { text-align: left; }
+.fin-table th {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-soft); background: var(--bg);
+}
+.fin-table tbody tr:last-child td { border-bottom: none; }
+.fin-table tbody tr:hover { background: var(--bg); }
+
+.fin-toggle-btn {
+  margin-top: 12px; background: none; border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 16px; font-size: 13px;
+  color: var(--ink-soft); cursor: pointer; width: 100%;
+  transition: border-color 0.2s;
+}
+.fin-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.fin-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; padding-bottom: 12px;
+}
+.fin-back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 12px 20px; font-size: 15px; font-weight: 500; cursor: pointer;
+  color: var(--ink-soft); transition: border-color 0.2s, color 0.2s;
+}
+.fin-back-btn:hover { border-color: var(--primary); color: var(--primary); }
+.fin-pdf-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #1a0e00; border: none; border-radius: 10px;
+  padding: 13px 22px; font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.fin-pdf-btn:hover { opacity: 0.88; transform: translateY(-1px); }
