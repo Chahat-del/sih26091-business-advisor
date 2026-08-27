@@ -3,25 +3,51 @@ import { requireFields } from "../middleware/validate.js";
 
 const router = Router();
 
-// POST /financial/calculate — body: { village, block, district, business, margin }
-// Returns the "Financial output" shape from docs/api-contracts.md.
-// TODO(Finance calculator workstream): replace mock with real
-// margin -> project cost -> loan amount -> scheme -> EMI logic.
+/**
+ * POST /financial/calculate
+ * Body: { village, block, district, business, margin }
+ *
+ * Implements the exact scheme logic from the problem statement:
+ *   projectCost   = margin / 0.10          (margin is always 10%)
+ *   maxLoanAmount = projectCost * 0.90
+ *
+ * Scheme routing:
+ *   projectCost ≤ 1,40,000  → Micro Finance (6.5% p.a., 3 yr, 3-month moratorium)
+ *   projectCost ≤ 50,00,000 → Term Loan     (8.0% p.a., 7 yr, 6-month moratorium)
+ *
+ * EMI uses reducing-balance quarterly compounding post-moratorium.
+ */
 router.post("/", requireFields(["business", "margin"]), (req, res) => {
-  const { margin } = req.body;
+  const margin = Number(req.body.margin);
 
-  const projectCost = Math.round(margin * 4);
-  const maxLoanAmount = projectCost - margin;
-  const scheme = maxLoanAmount <= 100000 ? "Micro Finance" : "Term Loan";
-  const interestRate = scheme === "Micro Finance" ? 9.5 : 11.2;
-  const tenureYears = scheme === "Micro Finance" ? 3 : 5;
-  const moratoriumMonths = 6;
+  if (!margin || margin <= 0) {
+    return res.status(400).json({ error: "margin must be a positive number" });
+  }
 
-  const monthlyRate = interestRate / 100 / 12;
-  const totalMonths = tenureYears * 12;
-  const monthlyEMI =
-    (maxLoanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
-    (Math.pow(1 + monthlyRate, totalMonths) - 1);
+  const projectCost   = Math.round(margin / 0.10);
+  const maxLoanAmount = Math.round(projectCost * 0.90);
+
+  if (projectCost > 5000000) {
+    return res.status(400).json({ error: "Project cost exceeds ₹50 lakh — outside scheme eligibility" });
+  }
+
+  const isMicro         = projectCost <= 140000;
+  const scheme          = isMicro ? "Micro Finance Scheme" : "Term Loan Scheme";
+  const interestRate    = isMicro ? 6.5 : 8.0;          // % p.a.
+  const tenureYears     = isMicro ? 3   : 7;
+  const moratoriumMonths = isMicro ? 3  : 6;
+
+  // Quarterly reducing-balance EMI (post-moratorium)
+  const r = interestRate / 100 / 4;                          // quarterly rate
+  const n = (tenureYears * 12 - moratoriumMonths) / 3;       // repayment quarters
+
+  // Simple interest on principal during moratorium, capitalised
+  const moratoriumInterest = maxLoanAmount * (interestRate / 100) * (moratoriumMonths / 12);
+  const effectivePrincipal = maxLoanAmount + moratoriumInterest;
+
+  const quarterlyEMI = Math.round(
+    (effectivePrincipal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
+  );
 
   res.json({
     projectCost,
@@ -30,7 +56,9 @@ router.post("/", requireFields(["business", "margin"]), (req, res) => {
     interestRate,
     tenureYears,
     moratoriumMonths,
-    quarterlyEMI: Math.round(monthlyEMI * 3),
+    quarterlyEMI,
+    totalRepayment: quarterlyEMI * n,
+    totalInterest: Math.round(quarterlyEMI * n - effectivePrincipal),
   });
 });
 

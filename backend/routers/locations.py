@@ -1,0 +1,130 @@
+"""
+GET /locations
+Returns the full state → district → block → village tree.
+Hardcoded for the prototype — mirrors frontend/src/data/locations.js exactly.
+Swap the constant for a DB query when real data is ready.
+"""
+
+from fastapi import APIRouter
+from typing import List
+
+router = APIRouter(tags=["Locations"])
+
+STATES = [
+    {
+        "id": "rajasthan", "name": "Rajasthan",
+        "districts": [
+            {"id": "kota", "name": "Kota", "blocks": [
+                {"id": "ladpura", "name": "Ladpura", "villages": ["Dadabari", "Ladpura Kalan", "Ladpura Khurd"]},
+                {"id": "digod",   "name": "Digod",   "villages": ["Digod Kalan", "Digod Khurd", "Digod Khera"]},
+                {"id": "sangod",  "name": "Sangod",  "villages": ["Sangod Kalan", "Kanwas", "Semli"]},
+            ]},
+            {"id": "bundi", "name": "Bundi", "blocks": [
+                {"id": "bundi-b", "name": "Bundi",   "villages": ["Bundi Kalan", "Bundi Khurd", "Nainwa Road"]},
+                {"id": "talera",  "name": "Talera",  "villages": ["Talera Kalan", "Talera Khurd", "Talera Khera"]},
+                {"id": "hindoli", "name": "Hindoli", "villages": ["Hindoli Kalan", "Hindoli Khurd", "Jaitpur"]},
+            ]},
+            {"id": "baran", "name": "Baran", "blocks": [
+                {"id": "baran-b", "name": "Baran",   "villages": ["Baran Kalan", "Baran Khurd", "Kelwara"]},
+                {"id": "atru",    "name": "Atru",    "villages": ["Atru Kalan", "Atru Khurd", "Samrania"]},
+                {"id": "chhabra", "name": "Chhabra", "villages": ["Chhabra Kalan", "Chhabra Khurd", "Kawai"]},
+            ]},
+        ],
+    },
+    {
+        "id": "madhya-pradesh", "name": "Madhya Pradesh",
+        "districts": [
+            {"id": "indore", "name": "Indore", "blocks": [
+                {"id": "depalpur", "name": "Depalpur", "villages": ["Depalpur Kalan", "Depalpur Khurd", "Bijalpur"]},
+                {"id": "mhow",     "name": "Mhow",     "villages": ["Mhow Kalan", "Mhow Khurd", "Manpur"]},
+                {"id": "sanwer",   "name": "Sanwer",   "villages": ["Sanwer Kalan", "Sanwer Khurd", "Bhamori"]},
+            ]},
+            {"id": "ujjain", "name": "Ujjain", "blocks": [
+                {"id": "ujjain-b", "name": "Ujjain",  "villages": ["Ujjain Kalan", "Ujjain Khurd", "Tarana Road"]},
+                {"id": "tarana",   "name": "Tarana",  "villages": ["Tarana Kalan", "Tarana Khurd", "Ghatia"]},
+                {"id": "ghatiya",  "name": "Ghatiya", "villages": ["Ghatiya Kalan", "Ghatiya Khurd", "Nagda"]},
+            ]},
+        ],
+    },
+    {
+        "id": "karnataka", "name": "Karnataka",
+        "districts": [
+            {"id": "bengaluru-urban", "name": "Bengaluru Urban", "blocks": [
+                {"id": "bengaluru-north", "name": "Bengaluru North", "villages": ["Yelahanka", "Hebbal", "Jakkur"]},
+                {"id": "bengaluru-south", "name": "Bengaluru South", "villages": ["Begur", "Bommanahalli", "Kengeri"]},
+                {"id": "anekal",          "name": "Anekal",          "villages": ["Anekal", "Attibele", "Sarjapura"]},
+            ]},
+            {"id": "mysuru", "name": "Mysuru", "blocks": [
+                {"id": "mysuru-t",  "name": "Mysuru",    "villages": ["Varuna", "Ilwala", "Kadakola"]},
+                {"id": "nanjangud", "name": "Nanjangud", "villages": ["Nanjangud", "Hullahalli", "Bilikere"]},
+                {"id": "hunsur",    "name": "Hunsur",    "villages": ["Hunsur", "Ravandur", "Gavadagere"]},
+            ]},
+        ],
+    },
+    {
+        "id": "kerala", "name": "Kerala",
+        "districts": [
+            {"id": "ernakulam", "name": "Ernakulam", "blocks": [
+                {"id": "kochi",       "name": "Kochi",       "villages": ["Fort Kochi", "Mattancherry", "Willingdon Island"]},
+                {"id": "aluva",       "name": "Aluva",       "villages": ["Aluva", "Kalamassery", "Desom"]},
+                {"id": "kunnathunad", "name": "Kunnathunad", "villages": ["Perumbavoor", "Kunnathunad", "Rayamangalam"]},
+            ]},
+            {"id": "thiruvananthapuram", "name": "Thiruvananthapuram", "blocks": [
+                {"id": "thiruvananthapuram-t", "name": "Thiruvananthapuram", "villages": ["Kazhakkoottam", "Sreekaryam", "Vattiyoorkavu"]},
+                {"id": "neyyattinkara",        "name": "Neyyattinkara",      "villages": ["Neyyattinkara", "Balaramapuram", "Kattakada"]},
+                {"id": "chirayinkeezhu",       "name": "Chirayinkeezhu",     "villages": ["Chirayinkeezhu", "Kadinamkulam", "Attingal"]},
+            ]},
+        ],
+    },
+    {
+        "id": "telangana", "name": "Telangana",
+        "districts": [
+            {"id": "hyderabad", "name": "Hyderabad", "blocks": [
+                {"id": "secunderabad", "name": "Secunderabad", "villages": ["Bowenpally", "Marredpally", "Trimulgherry"]},
+                {"id": "charminar",    "name": "Charminar",    "villages": ["Chandrayangutta", "Falaknuma", "Bahadurpura"]},
+                {"id": "golconda",     "name": "Golconda",     "villages": ["Golconda", "Langar Houz", "Toli Chowki"]},
+            ]},
+            {"id": "warangal", "name": "Warangal", "blocks": [
+                {"id": "warangal-m",   "name": "Warangal",     "villages": ["Hasanparthy", "Kazipet", "Subedari"]},
+                {"id": "hanamkonda",   "name": "Hanamkonda",   "villages": ["Hanamkonda", "Kishanpura", "Mulugu Road"]},
+                {"id": "wardhannapet", "name": "Wardhannapet", "villages": ["Wardhannapet", "Parkal", "Shayampet"]},
+            ]},
+        ],
+    },
+    {
+        "id": "andhra-pradesh", "name": "Andhra Pradesh",
+        "districts": [
+            {"id": "visakhapatnam", "name": "Visakhapatnam", "blocks": [
+                {"id": "visakhapatnam-urban", "name": "Visakhapatnam Urban", "villages": ["Gajuwaka", "Malkapuram", "Marripalem"]},
+                {"id": "bheemunipatnam",      "name": "Bheemunipatnam",      "villages": ["Bheemunipatnam", "Bhogapuram", "Kotturu"]},
+                {"id": "pendurthi",           "name": "Pendurthi",           "villages": ["Pendurthi", "Simhachalam", "Vepagunta"]},
+            ]},
+            {"id": "guntur", "name": "Guntur", "blocks": [
+                {"id": "guntur-m",    "name": "Guntur",      "villages": ["Guntur Rural", "Pothuru", "Nallapadu"]},
+                {"id": "tenali",      "name": "Tenali",      "villages": ["Tenali", "Angalakuduru", "Kollipara"]},
+                {"id": "mangalagiri", "name": "Mangalagiri", "villages": ["Mangalagiri", "Nidamarru", "Nowluru"]},
+            ]},
+        ],
+    },
+    {
+        "id": "uttar-pradesh", "name": "Uttar Pradesh",
+        "districts": [
+            {"id": "lucknow", "name": "Lucknow", "blocks": [
+                {"id": "mall",           "name": "Mall",           "villages": ["Mall Kalan", "Mall Khurd", "Sisendi"]},
+                {"id": "malihabad",      "name": "Malihabad",      "villages": ["Malihabad Kalan", "Malihabad Khurd", "Kakori Road"]},
+                {"id": "sarojini-nagar", "name": "Sarojini Nagar", "villages": ["Sarojini Nagar Kalan", "Sarojini Nagar Khurd", "Gudamba"]},
+            ]},
+            {"id": "varanasi", "name": "Varanasi", "blocks": [
+                {"id": "sevapuri",   "name": "Sevapuri",   "villages": ["Sevapuri Kalan", "Sevapuri Khurd", "Harhua"]},
+                {"id": "chiraigaon", "name": "Chiraigaon", "villages": ["Chiraigaon Kalan", "Chiraigaon Khurd", "Kaithi"]},
+                {"id": "pindra",     "name": "Pindra",     "villages": ["Pindra Kalan", "Pindra Khurd", "Phulwaria"]},
+            ]},
+        ],
+    },
+]
+
+
+@router.get("/", tags=["Locations"])
+def get_locations():
+    """Return the full state → district → block → village hierarchy."""
+    return STATES

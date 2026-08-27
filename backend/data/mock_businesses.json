@@ -1,0 +1,12 @@
+[
+  { "id": "dairy",      "name": "Dairy & Milk Collection" },
+  { "id": "kirana",     "name": "Kirana / General Store" },
+  { "id": "tailoring",  "name": "Tailoring Unit" },
+  { "id": "flour-mill", "name": "Flour Mill (Atta Chakki)" },
+  { "id": "poultry",    "name": "Poultry Farming" },
+  { "id": "handicraft", "name": "Handicrafts & Weaving" },
+  { "id": "agri-input", "name": "Agri Input Shop" },
+  { "id": "beauty",     "name": "Beauty & Wellness" },
+  { "id": "transport",  "name": "Mini Transport" },
+  { "id": "food-proc",  "name": "Food Processing" }
+]
